@@ -1,30 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
-use GuzzleHttp\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controllers\HasMiddleware;
-
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller implements HasMiddleware
+class AuthController extends Controller
 {
     use ApiResponse;
-
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('auth:sanctum', except: ['register', 'login']),
-        ];
-    }
 
     public function register(RegisterRequest $request): JsonResponse
     {
