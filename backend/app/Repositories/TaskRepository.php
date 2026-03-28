@@ -41,7 +41,7 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
         $this->clearUserCache($user);
 
         ProcessTaskActivity::dispatch($task, 'created');
-        $user->notify(new TaskActivityNotification($task));
+        $user->notify(new TaskActivityNotification($task, 'created'));
     }
 
     public function delete(Model $model): bool
@@ -60,7 +60,7 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
         $this->clearUserCache($model->user);
 
         ProcessTaskActivity::dispatch($model, 'updated');
-        $model->user->notify(new TaskActivityNotification($updated));
+        $model->user->notify(new TaskActivityNotification($model, 'updated'));
         return $updated;
     }
 

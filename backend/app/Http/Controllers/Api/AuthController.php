@@ -40,7 +40,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // optional void try catch if needed # $user = User::where('email', $request->email)->firstOrFail();
+        // optional, void try catch if needed # $user = User::where('email', $request->email)->firstOrFail();
         try {
             $user = User::where('email', $request->email)->firstOrFail();
         } catch (ModelNotFoundException $e) {
