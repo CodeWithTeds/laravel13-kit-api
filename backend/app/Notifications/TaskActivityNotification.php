@@ -47,7 +47,9 @@ class TaskActivityNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'task_id' => $this->task->id,
+            'title' => $this->task->title,
+            'action' => $this->action,
         ];
     }
 }
