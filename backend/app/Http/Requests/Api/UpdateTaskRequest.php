@@ -23,7 +23,9 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'sometimes|required|max:255',
+            'description' => 'sometimes|required',
+            'status' => 'sometimes|required',
         ];
     }
 }
