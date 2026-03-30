@@ -17,7 +17,7 @@ class ProcessTaskActivity implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected Task $task, protected string $action) {}
+    public function __construct(protected Task $task, protected string $act) {}
 
     /**
      * Execute the job.

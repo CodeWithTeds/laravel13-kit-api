@@ -15,8 +15,7 @@ class TaskActivityNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Task $task, protected string $action)
-    {}
+    public function __construct(protected Task $task, protected string $action) {}
 
     /**
      * Get the notification's delivery channels.
