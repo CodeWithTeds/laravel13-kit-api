@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Api\StoreTaskRequest;
 use App\Http\Requests\Api\UpdateTaskRequest;
@@ -35,14 +37,11 @@ class TaskController extends Controller
         return $this->successResponse(new TaskResource($task), 'Task created successfully', 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, string $id): JsonResponse
     {
         $task = $this->taskRepository->find($id);
 
-        // if ($task) {
+        // if (!$task) {
         //     return $this->errorResponse('Task not found', 404);
         // }
 
@@ -59,13 +58,37 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, string $id): JsonResponse
     {
         $task = $this->taskRepository->find($id);
+
+        // if (!$task) {
+        //     return $this->errorResponse('Task not found', 404);
+        // }
+
+        // if ($task->user_id !== $request->user()->id) {
+        //     return $this->errorResponse('Unauthorized', 403);
+        // }
+
+        $this->taskRepository->update($task, $request->validated());
+
+        return $this->successResponse(new TaskResource($task), 'Task updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Request $request, string $id): JsonResponse
     {
-        //
+        $task = $this->taskRepository->find($id);
+
+        // if (!$task) {
+        //     return $this->errorResponse('Task not found', 404);
+        // }
+
+        // if ($task->user_id !== $request->user()->id) {
+        //     return $this->errorResponse('Unauthorized', 403);
+        // }
+
+        $this->taskRepository->delete($task);
+
+        return $this->successResponse(null, 'Task deleted successfully');
     }
 }
