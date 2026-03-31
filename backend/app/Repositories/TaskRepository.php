@@ -28,10 +28,16 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
     public function getForUserPaginated(User $user, int $perPage = 10): LengthAwarePaginator
     {
         $page = request()->get('page', 1);
-        $cacheKey = "user:{$user->id}:items:page:{$page}:perPage:{$perPage}";
+        $queryString = request()->getQueryString();
+        $cacheKey = "user:{$user->id}:items:page:{$page}:perPage:{$perPage}:{$queryString}";
 
         return Cache::remember($cacheKey, 3600, function () use ($user, $perPage) {
-            return $user->tasks()->latest->paginate($perPage);
+            return QueryBuilder::for($user->tasks())
+                ->allowedFilters(['status', 'title'])
+                ->allowedSorts(['created_at', 'updated_at'])
+                ->allowedIncludes(['user'])
+                ->defaultSort('-created_at')
+                ->paginate($perPage);
         });
     }
 
