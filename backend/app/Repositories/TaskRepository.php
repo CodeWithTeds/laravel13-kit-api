@@ -9,6 +9,7 @@ use App\Notifications\TaskActivityNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskRepository extends BaseRepository implements TaskRepositoryInterface
 {
@@ -33,10 +34,9 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
 
         return Cache::remember($cacheKey, 3600, function () use ($user, $perPage) {
             return QueryBuilder::for($user->tasks())
-                ->allowedFilters(['status', 'title'])
-                ->allowedSorts(['created_at', 'updated_at'])
-                ->allowedIncludes(['user'])
-                ->defaultSort('-created_at')
+                ->allowedFilters('status', 'title')
+                ->allowedSorts('created_at', 'updated_at')
+                ->allowedIncludes('user')
                 ->paginate($perPage);
         });
     }
