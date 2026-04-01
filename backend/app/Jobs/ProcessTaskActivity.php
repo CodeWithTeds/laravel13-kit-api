@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\TaskActivityLogged;
 use App\Models\Task;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,13 +18,17 @@ class ProcessTaskActivity implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected Task $task, protected string $act) {}
+    public function __construct() {}
 
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(TaskActivityLogged $event): void
     {
-        Log::info("Processing task activity for task: {$this->task->id}");
+        $task = $event->task;
+        $action = $event->action;
+
+        ProcessTaskActivity::dispatch($task, $action);
+        $task->user->notify(new TaskActivityLogged($task, $action));
     }
 }
