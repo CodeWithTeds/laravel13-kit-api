@@ -12,6 +12,7 @@ use App\Repositories\TaskRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -40,15 +41,7 @@ class TaskController extends Controller
     public function show(Request $request, string $id): JsonResponse
     {
         $task = $this->taskRepository->find($id);
-
-        // if (!$task) {
-        //     return $this->errorResponse('Task not found', 404);
-        // }
-
-        // if ($task->user_id !== $request->user()->id) {
-        //     return $this->errorResponse('Unauthorized', 403);
-        // }
-
+        Gate::authorize('view', $task);
         return $this->successResponse(new TaskResource($task), 'Task retrieved successfully');
     }
 
@@ -58,14 +51,7 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, string $id): JsonResponse
     {
         $task = $this->taskRepository->find($id);
-
-        // if (!$task) {
-        //     return $this->errorResponse('Task not found', 404);
-        // }
-
-        // if ($task->user_id !== $request->user()->id) {
-        //     return $this->errorResponse('Unauthorized', 403);
-        // }
+        Gate::authorize('update', $task);
 
         $this->taskRepository->update($task, $request->validated());
 
@@ -75,20 +61,10 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, string $id): JsonResponse
+    public function destroy(Task $task): JsonResponse
     {
-        $task = $this->taskRepository->find($id);
-
-        // if (!$task) {
-        //     return $this->errorResponse('Task not found', 404);
-        // }
-
-        // if ($task->user_id !== $request->user()->id) {
-        //     return $this->errorResponse('Unauthorized', 403);
-        // }
-
+        Gate::authorize('delete', $task);
         $this->taskRepository->delete($task);
-
         return $this->successResponse(null, 'Task deleted successfully');
     }
 }
